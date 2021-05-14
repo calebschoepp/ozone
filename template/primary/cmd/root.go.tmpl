@@ -1,0 +1,26 @@
+package cmd
+
+import (
+	"os"
+
+	"github.com/spf13/cobra"
+)
+
+var rootCmd = &cobra.Command{
+	Use:     "{{- .D.Name -}}",
+	Short:   "TODO support short description",
+	Long:    "TODO support long description",
+	Version: "{{- .D.AppVersion -}}",
+}
+
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		os.Exit(1)
+	}
+}
+
+func init() {
+	{{ range .D.Commands }}
+	rootCmd.AddCommand({{- .Name -}}Cmd)
+	{{ end }}
+}

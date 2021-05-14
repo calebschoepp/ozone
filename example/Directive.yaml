@@ -1,0 +1,17 @@
+name: example
+appVersion: v0.0.1
+
+root:
+
+commands:
+  - name: echo
+    args:
+      - msg
+    steps:
+      - echo-to-output
+
+  # - name: cat
+  #   args:
+  #     - file
+  #   steps:
+  #     - cat-from-file

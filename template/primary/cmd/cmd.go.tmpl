@@ -1,0 +1,67 @@
+package cmd
+
+import (
+	_ "embed"
+	"fmt"
+
+	"github.com/spf13/cobra"
+	"github.com/wasmerio/wasmer-go/wasmer"
+)
+
+//go:embed {{ index .Steps 0 -}}.wasm
+var {{ .Name -}}WasmBytes []byte
+
+var {{ .Name -}}Cmd = &cobra.Command{
+	Use:   "{{- .Name }} [dir]",
+	Short: "TODO support short description",
+	Long:  "TODO support long description",
+	Args:  cobra.ExactArgs({{ len .Args }}),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		// Based on https://wasmer.io/posts/wasmer-go-embedding-1.0
+		// Create an Engine
+		engine := wasmer.NewEngine()
+
+		// Create a Store
+		store := wasmer.NewStore(engine)
+
+		// Let's compile the module.
+		module, err := wasmer.NewModule(store, {{ .Name -}}WasmBytes)
+		if err != nil {
+			return fmt.Errorf("failed to compile module: %s", err.Error())
+		}
+
+		wasiEnv, err := wasmer.NewWasiStateBuilder("{{- .Name -}}").
+			MapDirectory("the_host_current_directory", ".").
+			InheritStdout().
+			InheritStdin().
+			InheritStderr().
+			Finalize()
+		if err != nil {
+			return fmt.Errorf("failed to build wasiEnv: %s", err.Error())
+		}
+
+		// Get the import object (WASI version is auto-detected)!
+		importObject, err := wasiEnv.GenerateImportObject(store, module)
+		if err != nil {
+			return fmt.Errorf("failed to generate import object: %s", err.Error())
+		}
+
+		// Let's instantiate the WebAssembly module.
+		instance, err := wasmer.NewInstance(module, importObject)
+		if err != nil {
+			return fmt.Errorf("failed to instantiate the module: %s", err.Error())
+		}
+
+		start, err := instance.Exports.GetWasiStartFunction()
+		if err != nil {
+			return fmt.Errorf("failed to find start function: %s", err.Error())
+		}
+
+		_, err = start()
+		if err != nil {
+			return fmt.Errorf("failed to run start function: %s", err.Error())
+		}
+
+		return nil
+	},
+}
