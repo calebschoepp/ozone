@@ -42,13 +42,12 @@ var buildCmd = &cobra.Command{
 		// Make sure we have all of the wasm
 		var wasm []string
 		for _, command := range directive.Commands {
-			for _, step := range command.Steps {
-				path := dir + step + ".wasm"
-				if _, err = os.Stat(path); err != nil {
-					return fmt.Errorf("could not find step %s.wasm", step)
-				}
-				wasm = append(wasm, path)
+			path := dir + command.Module + ".wasm"
+			if _, err = os.Stat(path); err != nil {
+				return fmt.Errorf("could not find module at %s", path)
 			}
+			wasm = append(wasm, path)
+
 		}
 
 		// Templates out the source code for the CLI

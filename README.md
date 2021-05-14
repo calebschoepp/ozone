@@ -10,3 +10,5 @@ For first version only allow a single Wasm module per command. Furthermore, we w
 
 - Temporarily just pass in arguments to the WASM via WASI arguments
 - Validate recursive struct YAML parsing
+- Add more sophistication to arguments
+- Handle single and multi command CLIS

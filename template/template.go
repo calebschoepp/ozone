@@ -68,26 +68,28 @@ func (p *primary) handleWalk(path string, d fs.DirEntry, err error) error {
 		return err
 	}
 
-	outFilePath := outDir + strings.TrimSuffix(strings.TrimPrefix(path, "primary"), ".tmpl")
-	err = os.MkdirAll(filepath.Dir(outFilePath), 0775)
-	if err != nil {
-		return err
-	}
-
-	outFile, err := os.Create(outFilePath)
-	if err != nil {
-		return err
-	}
-	defer outFile.Close()
-
 	if d.Name() == "cmd.go.tmpl" {
 		for _, cmd := range p.D.Commands {
+			outFilePath := outDir + strings.TrimSuffix(strings.TrimPrefix(path, "primary"), "cmd.go.tmpl") + cmd.Name + ".go"
+			outFile, err := open(outFilePath)
+			if err != nil {
+				return err
+			}
+
 			err = template.Execute(outFile, cmd)
 			if err != nil {
 				return err
 			}
+			outFile.Close()
 		}
 	} else {
+		outFilePath := outDir + strings.TrimSuffix(strings.TrimPrefix(path, "primary"), ".tmpl")
+		outFile, err := open(outFilePath)
+		if err != nil {
+			return err
+		}
+		defer outFile.Close()
+
 		err = template.Execute(outFile, *p)
 		if err != nil {
 			return err
@@ -95,6 +97,20 @@ func (p *primary) handleWalk(path string, d fs.DirEntry, err error) error {
 	}
 
 	return nil
+}
+
+func open(path string) (*os.File, error) {
+	err := os.MkdirAll(filepath.Dir(path), 0775)
+	if err != nil {
+		return nil, err
+	}
+
+	f, err := os.Create(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return f, nil
 }
 
 func copy(src, dest string) error {

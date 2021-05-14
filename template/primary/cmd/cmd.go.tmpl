@@ -8,7 +8,7 @@ import (
 	"github.com/wasmerio/wasmer-go/wasmer"
 )
 
-//go:embed {{ index .Steps 0 -}}.wasm
+//go:embed {{ .Module -}}.wasm
 var {{ .Name -}}WasmBytes []byte
 
 var {{ .Name -}}Cmd = &cobra.Command{

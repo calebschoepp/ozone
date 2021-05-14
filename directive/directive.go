@@ -21,9 +21,9 @@ type Directive struct {
 
 // Command represents the configuration of a single arbitrarily nested sub-command for the CLI
 type Command struct {
-	Name  string   `yaml:"name"`
-	Args  []string `yaml:"args"`
-	Steps []string `yaml:"steps"`
+	Name   string   `yaml:"name"`
+	Args   []string `yaml:"args"`
+	Module string   `yaml:"module"`
 }
 
 // Marshal outputs the YAML bytes of the Directive
@@ -69,11 +69,10 @@ func (d *Directive) Validate() error {
 
 		// TODO validate arguments
 
-		if len(c.Steps) == 0 {
-			problems.add(fmt.Errorf("command %s has no steps", c.Name))
+		if c.Module == "" {
+			problems.add(fmt.Errorf("command %s has no module", c.Name))
 			continue
 		}
-
 	}
 
 	return problems.render()

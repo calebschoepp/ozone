@@ -7,11 +7,9 @@ commands:
   - name: echo
     args:
       - msg
-    steps:
-      - echo-to-output
+    module: echo-to-output
 
-  # - name: cat
-  #   args:
-  #     - file
-  #   steps:
-  #     - cat-from-file
+  - name: cat
+    args:
+      - file
+    module: cat-from-file
