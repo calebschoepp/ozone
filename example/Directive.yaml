@@ -6,10 +6,11 @@ root:
 commands:
   - name: echo
     args:
-      - msg
-    module: echo-to-output
+      - msg1
+      - msg2
+    module: echo
 
   - name: cat
     args:
       - file
-    module: cat-from-file
+    module: cat

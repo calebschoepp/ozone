@@ -8,7 +8,8 @@ For first version only allow a single Wasm module per command. Furthermore, we w
 
 # TODO
 
-- Temporarily just pass in arguments to the WASM via WASI arguments
 - Validate recursive struct YAML parsing
 - Add more sophistication to arguments
 - Handle single and multi command CLIS
+- TODO build correct usage string based on provided args
+- Temporarily just pass in flags as env variables to the WASM

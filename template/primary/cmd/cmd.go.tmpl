@@ -31,7 +31,8 @@ var {{ .Name -}}Cmd = &cobra.Command{
 		}
 
 		wasiEnv, err := wasmer.NewWasiStateBuilder("{{- .Name -}}").
-			MapDirectory("the_host_current_directory", ".").
+			PreopenDirectory(".").
+			{{ range $i, $a := .Args }}Argument(args[{{- $i -}}]).{{ end }}
 			InheritStdout().
 			InheritStdin().
 			InheritStderr().

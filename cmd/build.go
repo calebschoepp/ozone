@@ -15,10 +15,7 @@ var buildCmd = &cobra.Command{
 	Long:  "Build takes in a Directive.yaml file and the associated Wasm and produces a CLI binary.",
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// TODO
-		// 1. Get Directive.yaml and validate it
-		// 2. Make sure we have all the Wasm we need
-		// 3. Template out a Go project
+		// TODO Validate that the dir is actually a directory
 		dir := "."
 		if len(args) > 0 {
 			dir = args[0]
